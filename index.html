@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Home IQ - Sua casa inteligente e sustentável.">
+    <title>Home IQ - Sua Casa, Mais Inteligente</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        @keyframes pulse-soft {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        .pulse-icon { animation: pulse-soft 2s ease-in-out infinite; }
+        .progress-bar { transition: width 0.4s ease; }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        #main-content { display: none; opacity: 0; transition: opacity 0.8s ease; }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-[#0f172a] text-slate-200 antialiased">
+
+    <div id="loading-screen" class="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-[#0f172a]">
+        <div class="pulse-icon mb-8 bg-blue-600 p-6 rounded-3xl shadow-2xl shadow-blue-500/20">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/><path d="M12 7h.01"/>
+            </svg>
+        </div>
+        <h1 class="text-3xl font-bold mb-2 tracking-tight text-white italic">Home IQ</h1>
+        <p id="loading-text" class="text-blue-400 mb-8 font-light text-sm tracking-wide">A carregar protocolos de segurança...</p>
+        <div class="w-64 h-1 bg-slate-800 rounded-full overflow-hidden">
+            <div id="progress" class="progress-bar h-full bg-blue-500 w-0"></div>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <header class="fixed top-0 w-full z-40 glass border-b border-white/5">
+            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <div class="bg-blue-600 p-1.5 rounded-lg">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                    </div>
+                    <span class="text-xl font-bold tracking-tighter text-white">Home IQ</span>
+                </div>
+                <nav class="hidden md:flex gap-8 text-sm font-medium text-slate-400">
+                    <a href="#funcionalidades" class="hover:text-blue-400 transition">Funcionalidades</a>
+                    <a href="#planos" class="hover:text-blue-400 transition">Planos</a>
+                    <a href="#depoimentos" class="hover:text-blue-400 transition">Depoimentos</a>
+                </nav>
+                <a href="#planos" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-full text-sm font-semibold transition shadow-lg shadow-blue-600/20">
+                    Comece Agora
+                </a>
+            </div>
+        </header>
+
+        <section class="pt-32 pb-20 px-6">
+            <div class="container mx-auto text-center max-w-4xl">
+                <span class="inline-block px-4 py-1.5 mb-6 text-[10px] font-bold tracking-widest text-blue-400 uppercase bg-blue-400/10 rounded-full border border-blue-400/20">
+                    MBA Cybersecurity - Projeto Acadêmico
+                </span>
+                <h1 class="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight">
+                    Controle sua energia. <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Viva uma casa mais inteligente.</span>
+                </h1>
+                <p class="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
+                    Economize até 20% na conta de luz com automação simples, segura e focada na sustentabilidade do seu lar.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="#planos" class="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-lg transition shadow-xl shadow-blue-600/30">
+                        Quero Economizar Agora
+                    </a>
+                </div>
+                
+                <div class="mt-20 relative">
+                    <div class="absolute inset-0 bg-blue-500/10 blur-[120px] rounded-full"></div>
+                    <div class="relative glass rounded-3xl p-6 border border-white/10 shadow-2xl overflow-hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-white font-bold">Consumo Energético (kWh)</h3>
+                            <span class="text-xs text-blue-400 font-mono">2025</span>
+                        </div>
+                        <div class="w-full h-[300px]">
+                            <canvas id="consumptionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 px-6">
+            <div class="container mx-auto flex justify-center">
+                <div class="relative w-full max-w-3xl group">
+                    <!-- Borda externa gradiente -->
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-500 via-emerald-500 to-blue-500 rounded-3xl p-1 opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    
+                    <!-- Borda interna com glow -->
+                    <div class="absolute inset-0 rounded-3xl border-2 border-transparent bg-gradient-to-r from-blue-400/50 via-emerald-400/50 to-blue-400/50 bg-clip-padding pointer-events-none"></div>
+                    
+                    <!-- Imagem com sombra -->
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl shadow-blue-600/40">
+                        <img src="image.png" alt="Smart Home IoT" class="w-full h-auto block transition-transform duration-300 group-hover:scale-105">
+                    </div>
+                    
+                    <!-- Glow effect de fundo -->
+                    <div class="absolute -inset-4 bg-blue-500/20 blur-3xl rounded-3xl -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="funcionalidades" class="py-24 bg-slate-900/40">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-white mb-4">Diferenciais Home IQ</h2>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="p-8 glass rounded-3xl card-hover transition-all duration-300">
+                        <div class="text-blue-400 mb-6 bg-blue-500/10 w-12 h-12 flex items-center justify-center rounded-xl font-bold text-xl">$</div>
+                        <h3 class="text-lg font-bold text-white mb-3">Economia Real</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed font-light">Monitoramento em tempo real para reduzir desperdícios.</p>
+                    </div>
+                    <div class="p-8 glass rounded-3xl card-hover transition-all duration-300">
+                        <div class="text-emerald-400 mb-6 bg-emerald-500/10 w-12 h-12 flex items-center justify-center rounded-xl">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-3">Segurança Total</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed font-light">Criptografia de ponta a ponta em todos os dispositivos.</p>
+                    </div>
+                    <div class="p-8 glass rounded-3xl card-hover transition-all duration-300">
+                        <div class="text-purple-400 mb-6 bg-purple-500/10 w-12 h-12 flex items-center justify-center rounded-xl">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-3">Integração Fácil</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed font-light">Totalmente compatível com Alexa e Google Home.</p>
+                    </div>
+                    <div class="p-8 glass rounded-3xl card-hover transition-all duration-300">
+                        <div class="text-orange-400 mb-6 bg-orange-500/10 w-12 h-12 flex items-center justify-center rounded-xl">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-3">Suporte 24h</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed font-light">Instalação guiada e assistência humana garantida.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="depoimentos" class="py-24 px-6">
+            <div class="container mx-auto">
+                <h2 class="text-3xl font-bold text-white text-center mb-16">O que nossos clientes dizem</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="p-8 glass rounded-3xl border border-white/5">
+                        <div class="flex text-yellow-500 mb-4 text-sm">★★★★★</div>
+                        <p class="text-slate-400 italic mb-6">"Reduzi minha conta em 15% no primeiro mês! A automação das luzes fez toda a diferença."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center font-bold">R</div>
+                            <div>
+                                <p class="text-white font-bold text-sm">Ricardo S.</p>
+                                <p class="text-xs text-slate-500">Lisboa, PT</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-8 glass rounded-3xl border border-blue-500/20">
+                        <div class="flex text-yellow-500 mb-4 text-sm">★★★★★</div>
+                        <p class="text-slate-400 italic mb-6">"A segurança me surpreendeu. O sistema de criptografia me deixa tranquilo para usar em qualquer lugar."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center font-bold">M</div>
+                            <div>
+                                <p class="text-white font-bold text-sm">Maria Clara</p>
+                                <p class="text-xs text-slate-500">Porto, PT</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-8 glass rounded-3xl border border-white/5">
+                        <div class="flex text-yellow-500 mb-4 text-sm">★★★★★</div>
+                        <p class="text-slate-400 italic mb-6">"Interface muito intuitiva. Meus filhos adoram controlar as cores do quarto pelo tablet."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center font-bold">J</div>
+                            <div>
+                                <p class="text-white font-bold text-sm">João Pedro</p>
+                                <p class="text-xs text-slate-500">Coimbra, PT</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="planos" class="py-24 bg-slate-900/40 px-6">
+            <div class="container mx-auto max-w-6xl">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-white mb-4">Escolha seu nível de inteligência</h2>
+                    <p class="text-slate-400">Soluções flexíveis para cada tipo de lar.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="p-8 glass rounded-[2rem] border border-white/5 flex flex-col">
+                        <h3 class="text-xl font-bold text-white mb-2">Kit Básico</h3>
+                        <p class="text-slate-400 text-sm mb-6">Ideal para apartamentos pequenos.</p>
+                        <div class="text-4xl font-bold text-white mb-8">R$149<span class="text-sm font-normal text-slate-500">/único</span></div>
+                        <ul class="text-sm space-y-4 mb-10 flex-grow">
+                            <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 1 Hub Central IQ</li>
+                            <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 4 Lâmpadas Inteligentes</li>
+                            <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 2 Tomadas Monitoradas</li>
+                        </ul>
+                        <button class="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-2xl font-bold transition">Escolher Básico</button>
+                    </div>
+
+                    <div class="p-8 bg-blue-600 rounded-[2rem] shadow-2xl shadow-blue-600/20 flex flex-col transform scale-105 border-4 border-blue-400/30 relative">
+                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-emerald-400 text-[#0f172a] text-[10px] font-bold px-4 py-1 rounded-full uppercase tracking-widest">Mais Popular</div>
+                        <h3 class="text-xl font-bold text-white mb-2">Kit Família</h3>
+                        <p class="text-blue-100 text-sm mb-6">Automação completa para casas.</p>
+                        <div class="text-4xl font-bold text-white mb-8">R$299<span class="text-sm font-normal text-blue-200">/único</span></div>
+                        <ul class="text-sm space-y-4 mb-10 flex-grow">
+                            <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 1 Hub Central IQ Pro</li>
+                            <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 8 Lâmpadas Inteligentes</li>
+                            <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 4 Tomadas Monitoradas</li>
+                            <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 2 Sensores de Presença</li>
+                        </ul>
+                        <button class="w-full py-4 bg-white text-blue-600 rounded-2xl font-bold transition hover:bg-slate-100">Escolher Família</button>
+                    </div>
+
+                    <div class="p-8 glass rounded-[2rem] border border-white/5 flex flex-col">
+                        <h3 class="text-xl font-bold text-white mb-2">Plano IA Premium</h3>
+                        <p class="text-slate-400 text-sm mb-6">Otimização máxima com IA.</p>
+                        <div class="text-4xl font-bold text-white mb-8">R$50<span class="text-sm font-normal text-slate-500">/mês</span></div>
+                        <ul class="text-sm space-y-4 mb-10 flex-grow text-slate-400">
+                            <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Relatórios Avançados</li>
+                            <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> IA de Sugestão de Rotinas</li>
+                            <li class="flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Armazenamento Cloud 30 dias</li>
+                        </ul>
+                        <button class="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-2xl font-bold transition">Assinar Agora</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 px-6">
+            <div class="container mx-auto glass rounded-[3rem] p-12 border border-blue-500/20">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold text-white mb-6">Sua tranquilidade é nossa prioridade.</h2>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div class="bg-emerald-500/20 p-3 rounded-xl h-fit text-emerald-400 font-bold">✓</div>
+                                <div>
+                                    <h4 class="text-white font-bold">Garantia de Satisfação</h4>
+                                    <p class="text-slate-400 text-sm">Instalação fácil ou seu dinheiro de volta em até 30 dias.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="bg-blue-500/20 p-3 rounded-xl h-fit text-blue-400 font-bold">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-bold">Proteção de Dados</h4>
+                                    <p class="text-slate-400 text-sm">Criptografia AES-256 e conformidade total com o RGPD.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center md:text-right">
+                        <div class="inline-block p-10 bg-white/5 rounded-full border border-white/10 pulse-icon">
+                             <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="pt-24 pb-12 border-t border-white/5 bg-[#0b1222]">
+            <div class="container mx-auto px-6">
+                <div class="grid md:grid-cols-4 gap-12 mb-16">
+                    <div class="col-span-1 md:col-span-1">
+                        <div class="flex items-center gap-2 mb-6">
+                            <div class="bg-blue-600 p-1.5 rounded-lg">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                            </div>
+                            <span class="text-2xl font-bold tracking-tighter text-white">Home IQ</span>
+                        </div>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-6">
+                            Líderes em automação sustentável e segurança doméstica inteligente.
+                        </p>
+                        <div class="flex gap-4">
+                            <a href="#" class="text-slate-400 hover:text-white transition"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg></a>
+                            <a href="#" class="text-slate-400 hover:text-white transition"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.266.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-6">Empresa</h4>
+                        <ul class="text-slate-500 text-sm space-y-4">
+                            <li><a href="#" class="hover:text-blue-400">Sobre nós</a></li>
+                            <li><a href="#" class="hover:text-blue-400">Carreiras</a></li>
+                            <li><a href="#" class="hover:text-blue-400">Imprensa</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-6">Legal</h4>
+                        <ul class="text-slate-500 text-sm space-y-4">
+                            <li><a href="#" class="hover:text-blue-400">Política de Privacidade</a></li>
+                            <li><a href="#" class="hover:text-blue-400">Termos de Uso</a></li>
+                            <li><a href="#" class="hover:text-blue-400">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-6">Ajuda</h4>
+                        <ul class="text-slate-500 text-sm space-y-4">
+                            <li><a href="#" class="hover:text-blue-400">Suporte 24h</a></li>
+                            <li><a href="https://wa.me/seunumeroaqui" class="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.438 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884 0 2.225.569 3.846 1.595 5.27l-.999 3.657 3.753-.984z"/></svg>
+                                WhatsApp Direto
+                            </a></li>
+                            <li><a href="#" class="hover:text-blue-400">Perguntas Frequentes</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="pt-8 border-t border-white/5 text-center text-slate-600 text-[10px] tracking-widest uppercase">
+                    &copy; 2025 Home IQ - MBA em Cybersecurity | Desenvolvido por Luciana Porto.
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const loadingPhrases = ["Iniciando módulos...", "Verificando segurança...", "Sincronizando...", "Otimizando...", "Pronto."];
+        let phraseIdx = 0;
+        const loadingText = document.getElementById('loading-text');
+        const progressBar = document.getElementById('progress');
+        const loadingScreen = document.getElementById('loading-screen');
+        const mainContent = document.getElementById('main-content');
+
+        function initApp() {
+            let progressWidth = 0;
+            const textTimer = setInterval(() => {
+                if (phraseIdx < loadingPhrases.length - 1) {
+                    phraseIdx++;
+                    loadingText.textContent = loadingPhrases[phraseIdx];
+                }
+            }, 800);
+
+            const progressTimer = setInterval(() => {
+                if (progressWidth >= 100) {
+                    clearInterval(progressTimer);
+                    clearInterval(textTimer);
+                    revealSite();
+                } else {
+                    progressWidth += Math.random() * 25;
+                    if (progressWidth > 100) progressWidth = 100;
+                    progressBar.style.width = progressWidth + '%';
+                }
+            }, 400);
+        }
+
+        function renderChart() {
+            const ctx = document.getElementById('consumptionChart').getContext('2d');
+            const randomData = Array.from({length: 12}, () => Math.floor(Math.random() * 100) + 20);
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [{
+                        label: 'Consumo Mensal',
+                        data: randomData,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#3b82f6',
+                        pointBorderColor: '#fff',
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                    }
+                }
+            });
+        }
+
+        function revealSite() {
+            setTimeout(() => {
+                loadingScreen.style.transition = "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)";
+                loadingScreen.style.opacity = "0";
+                loadingScreen.style.transform = "scale(1.1)";
+                setTimeout(() => {
+                    loadingScreen.style.display = "none";
+                    mainContent.style.display = "block";
+                    setTimeout(() => {
+                        mainContent.style.opacity = "1";
+                        renderChart();
+                    }, 50);
+                }, 800);
+            }, 400);
+        }
+
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
+
